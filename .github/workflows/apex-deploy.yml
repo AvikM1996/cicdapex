@@ -80,6 +80,15 @@ jobs:
           PROMPT ===== IMPORT COMPLETED =====;
           exit;
           EOF
+      - name: 🔍 Check Workspace Mapping   # 👈 Ekhane bosbe
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET HEADING ON;
+          SELECT workspace, application_id, application_name 
+          FROM apex_applications 
+          WHERE application_id = 119;
+          exit;
+          EOF
 
       - name: ✅ Verify Deployment
         run: |
