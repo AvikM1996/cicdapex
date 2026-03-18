@@ -1,0 +1,345 @@
+prompt --application/shared_components/workflow/workflows/pam_workflow_1
+begin
+--   Manifest
+--     WORKFLOW: PAM WORKFLOW_1
+--   Manifest End
+wwv_flow_imp.component_begin (
+ p_version_yyyy_mm_dd=>'2024.11.30'
+,p_release=>'24.2.14'
+,p_default_workspace_id=>52461504045118878
+,p_default_application_id=>119
+,p_default_id_offset=>0
+,p_default_owner=>'IRM_POC'
+);
+wwv_flow_imp_shared.create_workflow(
+ p_id=>wwv_flow_imp.id(225820996685402841)
+,p_name=>'PAM WORKFLOW_1'
+,p_static_id=>'New_1'
+,p_title=>'PAM WORKFLOW'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226044703713185102)
+,p_workflow_id=>wwv_flow_imp.id(225820996685402841)
+,p_label=>'OWNER_ID'
+,p_static_id=>'OWNER_ID'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226044802525185103)
+,p_workflow_id=>wwv_flow_imp.id(225820996685402841)
+,p_label=>'HOD_ID'
+,p_static_id=>'HOD_ID'
+,p_direction=>'IN'
+,p_data_type=>'VARCHAR2'
+,p_is_required=>false
+);
+wwv_flow_imp_shared.create_workflow_version(
+ p_id=>wwv_flow_imp.id(225821028779402842)
+,p_workflow_id=>wwv_flow_imp.id(225820996685402841)
+,p_version=>'1.0'
+,p_state=>'ACTIVE'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051105049208513)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'Approver'
+,p_static_id=>'APPROVER'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051258382208514)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'DATA_EXIST'
+,p_static_id=>'DATA_EXIST'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051372084208515)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'PAM_BUSINESS_UNIT'
+,p_static_id=>'PAM_BUSINESS_UNIT'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051415438208516)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'PAM_ID'
+,p_static_id=>'PAM_ID'
+,p_direction=>'VARIABLE'
+,p_data_type=>'NUMBER'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051563822208517)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'PAM_SYSTEM_CONFIGURATION'
+,p_static_id=>'PAM_SYSTEM_CONFIGURATION'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051639733208518)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'TaskOutcome'
+,p_static_id=>'TASK_OUTCOME'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226051709671208519)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'TEMP_ID'
+,p_static_id=>'TEMP_ID'
+,p_direction=>'VARIABLE'
+,p_data_type=>'NUMBER'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(226052323082208525)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_label=>'V_EMAIL'
+,p_static_id=>'V_EMAIL'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(225821180808402843)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'Start'
+,p_static_id=>'New'
+,p_display_sequence=>10
+,p_activity_type=>'NATIVE_WORKFLOW_START'
+,p_diagram=>'{"position":{"x":10,"y":960},"z":1}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(225821338036402845)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'MONTHLY PAM TRANSCATION DATA'
+,p_static_id=>'New_1'
+,p_display_sequence=>20
+,p_activity_type=>'NATIVE_PLSQL'
+,p_activity_code=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'begin',
+'',
+'select id,SYSTEM_CONFIGURATION,BUSINESS_UNIT into :PAM_ID,:PAM_SYSTEM_CONFIGURATION,:PAM_BUSINESS_UNIT',
+'from pam WHERE ID=1 group by ID,SYSTEM_CONFIGURATION,BUSINESS_UNIT  ; ',
+'',
+'',
+'',
+'end;'))
+,p_activity_code_language=>'PLSQL'
+,p_location=>'LOCAL'
+,p_diagram=>'{"position":{"x":460,"y":960},"z":2}'
+);
+wwv_flow_imp_shared.create_workflow_variable(
+ p_id=>wwv_flow_imp.id(225821418730402846)
+,p_activity_id=>wwv_flow_imp.id(225821338036402845)
+,p_label=>'New'
+,p_static_id=>'NEW'
+,p_direction=>'VARIABLE'
+,p_data_type=>'VARCHAR2'
+,p_value_type=>'NULL'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(225821664421402848)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'End'
+,p_static_id=>'New_2'
+,p_display_sequence=>30
+,p_activity_type=>'NATIVE_WORKFLOW_END'
+,p_attribute_01=>'COMPLETED'
+,p_diagram=>'{"position":{"x":1810,"y":960},"z":3}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(225821789227402849)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'Check '
+,p_static_id=>'New_3'
+,p_display_sequence=>40
+,p_activity_type=>'NATIVE_WORKFLOW_SWITCH'
+,p_attribute_01=>'TRUE_FALSE_CHECK'
+,p_attribute_03=>'WF_VARIABLE_EQ_VAL'
+,p_attribute_08=>'TASK_OUTCOME'
+,p_attribute_14=>'APPROVED'
+,p_diagram=>'{"position":{"x":1300,"y":960},"z":4}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(226050093145208502)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'ACCEPT/REJECT'
+,p_static_id=>'New_4'
+,p_display_sequence=>50
+,p_activity_type=>'NATIVE_CREATE_TASK'
+,p_attribute_01=>wwv_flow_imp.id(225605249681266416)
+,p_attribute_08=>'TASK_OUTCOME'
+,p_attribute_09=>'APPROVER'
+,p_attribute_10=>'Y'
+,p_diagram=>'{"position":{"x":950,"y":960},"z":5}'
+);
+wwv_flow_imp_shared.create_task_def_comp_param(
+ p_id=>wwv_flow_imp.id(226050215628208504)
+,p_workflow_activity_id=>wwv_flow_imp.id(226050093145208502)
+,p_task_def_param_id=>wwv_flow_imp.id(225611319372305234)
+,p_value_type=>'ITEM'
+,p_value=>'PAM_BUSINESS_UNIT'
+);
+wwv_flow_imp_shared.create_task_def_comp_param(
+ p_id=>wwv_flow_imp.id(226050370130208505)
+,p_workflow_activity_id=>wwv_flow_imp.id(226050093145208502)
+,p_task_def_param_id=>wwv_flow_imp.id(225611687632305239)
+,p_value_type=>'ITEM'
+,p_value=>'PAM_ID'
+);
+wwv_flow_imp_shared.create_task_def_comp_param(
+ p_id=>wwv_flow_imp.id(226050427176208506)
+,p_workflow_activity_id=>wwv_flow_imp.id(226050093145208502)
+,p_task_def_param_id=>wwv_flow_imp.id(225612096156305240)
+,p_value_type=>'ITEM'
+,p_value=>'V_SYSTEM_CONFIGURATION'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(226050500751208507)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'PAM HOD'
+,p_static_id=>'New_5'
+,p_display_sequence=>60
+,p_activity_type=>'NATIVE_CREATE_TASK'
+,p_attribute_01=>wwv_flow_imp.id(225833305065474159)
+,p_attribute_05=>'1'
+,p_diagram=>'{"position":{"x":1300,"y":1190},"z":6}'
+);
+wwv_flow_imp_shared.create_task_def_comp_param(
+ p_id=>wwv_flow_imp.id(226050786871208509)
+,p_workflow_activity_id=>wwv_flow_imp.id(226050500751208507)
+,p_task_def_param_id=>wwv_flow_imp.id(225938438105606441)
+,p_value_type=>'ITEM'
+,p_value=>'PAM_ID'
+);
+wwv_flow_imp_shared.create_task_def_comp_param(
+ p_id=>wwv_flow_imp.id(226050829391208510)
+,p_workflow_activity_id=>wwv_flow_imp.id(226050500751208507)
+,p_task_def_param_id=>wwv_flow_imp.id(225958290580670615)
+,p_value_type=>'ITEM'
+,p_value=>'PAM_SYSTEM_CONFIGURATION'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(226050943373208511)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'REJECT PAM'
+,p_static_id=>'New_6'
+,p_display_sequence=>70
+,p_activity_type=>'NATIVE_PLSQL'
+,p_activity_code=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'UPDATE PAM SET W_STATUS=''R'' WHERE ID=:PAM_ID;',
+''))
+,p_activity_code_language=>'PLSQL'
+,p_location=>'LOCAL'
+,p_diagram=>'{"position":{"x":1300,"y":1090},"z":7}'
+);
+wwv_flow_imp_shared.create_workflow_activity(
+ p_id=>wwv_flow_imp.id(226052188586208523)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_name=>'mail'
+,p_static_id=>'New_7'
+,p_display_sequence=>80
+,p_activity_type=>'NATIVE_SEND_EMAIL'
+,p_attribute_01=>'contactus@techriskpartners.com'
+,p_attribute_02=>'NOORULH.ANSARI@TECHRISKPARTNERS.COM'
+,p_attribute_06=>'Approval For PAM'
+,p_attribute_07=>wwv_flow_string.join(wwv_flow_t_varchar2(
+'Hi,',
+'',
+'You have an approval task pending for the Privilege Access Module.'))
+,p_attribute_10=>'Y'
+,p_diagram=>'{"position":{"x":710,"y":960},"z":15}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(225821288371402844)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(225821180808402843)
+,p_to_activity_id=>wwv_flow_imp.id(225821338036402845)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":8,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(225821589567402847)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(225821338036402845)
+,p_to_activity_id=>wwv_flow_imp.id(226052188586208523)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":9,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(225821808473402850)
+,p_name=>'ACCEPTED'
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(225821789227402849)
+,p_to_activity_id=>wwv_flow_imp.id(225821664421402848)
+,p_condition_expr1=>'TRUE'
+,p_diagram=>'{"source":{},"target":{"name":"topLeft","args":{"dx":"0%","dy":"50%","rotate":true}},"vertices":[{"x":1680,"y":990}],"z":13,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(226049961094208501)
+,p_name=>'REJECTED '
+,p_transition_type=>'BRANCH'
+,p_from_activity_id=>wwv_flow_imp.id(225821789227402849)
+,p_to_activity_id=>wwv_flow_imp.id(226050943373208511)
+,p_condition_expr1=>'FALSE'
+,p_diagram=>'{"source":{"name":"bottom","args":{"dx":0,"dy":-10}},"target":{},"vertices":[],"z":14,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(226050118596208503)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(226050093145208502)
+,p_to_activity_id=>wwv_flow_imp.id(225821789227402849)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":10,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(226050645110208508)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(226050500751208507)
+,p_to_activity_id=>wwv_flow_imp.id(225821664421402848)
+,p_diagram=>'{"source":{"name":"right","args":{"dx":-10,"dy":0}},"target":{"name":"topLeft","args":{"dx":"50%","dy":"83.333%","rotate":true}},"vertices":[{"x":1840,"y":1220}],"z":11,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(226051038520208512)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(226050943373208511)
+,p_to_activity_id=>wwv_flow_imp.id(226050500751208507)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":12,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_transition(
+ p_id=>wwv_flow_imp.id(226052208026208524)
+,p_name=>'New'
+,p_transition_type=>'NORMAL'
+,p_from_activity_id=>wwv_flow_imp.id(226052188586208523)
+,p_to_activity_id=>wwv_flow_imp.id(226050093145208502)
+,p_diagram=>'{"source":{},"target":{},"vertices":[],"z":16,"label":{"distance":0.5,"offset":0}}'
+);
+wwv_flow_imp_shared.create_workflow_participant(
+ p_id=>wwv_flow_imp.id(226051819243208520)
+,p_workflow_version_id=>wwv_flow_imp.id(225821028779402842)
+,p_participant_type=>'OWNER'
+,p_name=>'New'
+,p_identity_type=>'USER'
+,p_value_type=>'EXPRESSION'
+,p_value_language=>'PLSQL'
+,p_value=>':APP_USER'
+);
+wwv_flow_imp.component_end;
+end;
+/
