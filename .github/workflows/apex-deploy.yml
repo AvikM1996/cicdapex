@@ -76,7 +76,7 @@ jobs:
           WHENEVER SQLERROR EXIT SQL.SQLCODE;
           SET DEFINE OFF;
           PROMPT ===== STARTING APEX IMPORT =====;
-          apex import -applicationid 119 -split -dir f119 -workspace WKSP_POC;
+          apex import application -applicationid 119 -split -dir f119 -workspace WKSP_POC;
           PROMPT ===== IMPORT COMPLETED =====;
           exit;
           EOF
