@@ -1,38 +1,48 @@
 name: Deploy APEX App
 
 on:
-push:
-branches:
-- cicd
+  push:
+    branches:
+      - cicd
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-steps:
-  - uses: actions/checkout@v3
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-  - name: Install Dependencies
-    run: |
-      sudo apt update
-      sudo apt install -y unzip curl
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y unzip curl
 
-  - name: Decode Wallet
-    run: |
-      echo "${{ secrets.DB_WALLET }}" | base64 -d > wallet.zip
-      unzip wallet.zip -d wallet
+      - name: Decode Wallet
+        run: |
+          echo "${{ secrets.DB_WALLET }}" | base64 -d > wallet.zip
+          unzip wallet.zip -d wallet
 
-  - name: Set TNS_ADMIN
-    run: echo "TNS_ADMIN=$(pwd)/wallet" >> $GITHUB_ENV
+      - name: Set TNS_ADMIN
+        run: echo "TNS_ADMIN=$(pwd)/wallet" >> $GITHUB_ENV
 
-  - name: Install SQLcl
-    run: |
-      curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-      unzip sqlcl.zip
+      - name: Install SQLcl
+        run: |
+          curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+          unzip sqlcl.zip
 
-  - name: Import APEX App
-    run: |
-      ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
-      apex import -applicationid 119 -split -dir f119
-      exit
-      EOF
+      - name: Verify Files (Debug)
+        run: |
+          echo "Current Directory:"
+          pwd
+          echo "Wallet Files:"
+          ls -l wallet
+          echo "APEX Files:"
+          ls -l f119
+
+      - name: Import APEX Application
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          apex import -applicationid 119 -split -dir f119
+          exit
+          EOF
