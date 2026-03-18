@@ -36,4 +36,3 @@ steps:
       apex import -applicationid 119 -split -dir f119
       exit
       EOF
-```
