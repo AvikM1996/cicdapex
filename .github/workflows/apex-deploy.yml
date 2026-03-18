@@ -9,10 +9,8 @@ jobs:
 deploy:
 runs-on: ubuntu-latest
 
-```
 steps:
-  - name: Checkout Code
-    uses: actions/checkout@v3
+  - uses: actions/checkout@v3
 
   - name: Install Dependencies
     run: |
@@ -32,16 +30,7 @@ steps:
       curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
       unzip sqlcl.zip
 
-  - name: Verify Files (Debug)
-    run: |
-      echo "Current Directory:"
-      pwd
-      echo "Wallet Files:"
-      ls -l wallet
-      echo "APEX Files:"
-      ls -l f119
-
-  - name: Import APEX Application
+  - name: Import APEX App
     run: |
       ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
       apex import -applicationid 119 -split -dir f119
