@@ -10,39 +10,76 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: 🧾 Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
+      - name: 📦 Install Dependencies
         run: |
           sudo apt update
           sudo apt install -y unzip curl
 
-      - name: Decode Wallet
+      - name: 🔐 Decode Wallet
         run: |
           echo "${{ secrets.DB_WALLET }}" | base64 -d > wallet.zip
-          unzip wallet.zip -d wallet
+          unzip -o wallet.zip -d wallet
 
-      - name: Set TNS_ADMIN
+      - name: 📍 Set TNS_ADMIN
         run: echo "TNS_ADMIN=$(pwd)/wallet" >> $GITHUB_ENV
 
-      - name: Install SQLcl
+      - name: ⚙️ Install SQLcl
         run: |
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip sqlcl.zip
+          unzip -o sqlcl.zip
 
-      - name: Verify Files (Debug)
+      - name: 🔍 Debug Environment
         run: |
-          echo "Current Directory:"
+          echo "===== CURRENT DIRECTORY ====="
           pwd
-          echo "Wallet Files:"
+          echo "===== ROOT FILES ====="
+          ls -l
+          echo "===== WALLET FILES ====="
           ls -l wallet
-          echo "APEX Files:"
-          ls -l f119
+          echo "===== APEX EXPORT FILES ====="
+          ls -l f119 || echo "❌ f119 folder not found"
+          echo "===== CHECK application.sql ====="
+          cat f119/application.sql | head -n 20 || echo "❌ application.sql missing"
 
-      - name: Import APEX Application
+      - name: 🔌 Test DB Connection
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
-          apex import -applicationid 119 -split -dir f119
-          exit
+          SET HEADING OFF;
+          SELECT 'DB Connected: ' || SYSDATE FROM dual;
+          exit;
           EOF
+
+      - name: 📊 Check Existing Apps
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET HEADING OFF;
+          SELECT workspace || ' | ' || application_id || ' | ' || application_name 
+          FROM apex_applications 
+          WHERE application_id = 119;
+          exit;
+          EOF
+
+      - name: 🚀 Import APEX Application
+        run: |
+          ./sqlcl/bin/sql ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          WHENEVER SQLERROR EXIT SQL.SQLCODE;
+          SET DEFINE OFF;
+          PROMPT ===== STARTING APEX IMPORT =====;
+          apex import -applicationid 119 -split -dir f119 -workspace WKSP_POC;
+          PROMPT ===== IMPORT COMPLETED =====;
+          exit;
+          EOF
+
+      - name: ✅ Verify Deployment
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET HEADING OFF;
+          SELECT 'AFTER DEPLOY: ' || application_id || ' - ' || application_name 
+          FROM apex_applications 
+          WHERE application_id = 119;
+          exit;
+          EOF
+
