@@ -41,8 +41,16 @@ jobs:
           ls -l wallet
           echo "===== APEX EXPORT FILES ====="
           ls -l f119 || echo "❌ f119 folder not found"
-          echo "===== CHECK application.sql ====="
-          cat f119/application.sql | head -n 20 || echo "❌ application.sql missing"
+          echo "===== CHECK install.sql ====="
+          cat f119/install.sql | head -n 20 || echo "❌ install.sql missing"
+      - name: Connect to DB
+        run: |
+          ./sqlcl/bin/sql -s /nolog <<EOF
+          CONNECT ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }}
+          SET HEADING OFF;
+          SELECT 'DB Connected: ' || SYSDATE FROM dual;
+          EXIT;
+          EOF
 
       - name: 🔌 Test DB Connection
         run: |
@@ -61,15 +69,36 @@ jobs:
           WHERE application_id = 119;
           exit;
           EOF
+      - name: 🔍 Find Workspace from Schema   # 👈 Ekhane bosbe
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET HEADING ON;
+          SELECT workspace, schema 
+          FROM apex_workspace_schemas;
+          exit;
+          EOF
 
       - name: 🚀 Import APEX Application
         run: |
           ./sqlcl/bin/sql ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
           WHENEVER SQLERROR EXIT SQL.SQLCODE;
           SET DEFINE OFF;
+          BEGIN
+            APEX_UTIL.SET_WORKSPACE('${{ secrets.APEX_WORKSPACE }}');
+          END;
+          /
           PROMPT ===== STARTING APEX IMPORT =====;
-          apex import -applicationid 119 -split -dir f119 -workspace WKSP_POC;
+          @f119/install.sql
           PROMPT ===== IMPORT COMPLETED =====;
+          exit;
+          EOF
+      - name: 🔍 Check Workspace Mapping   # 👈 Ekhane bosbe
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET HEADING ON;
+          SELECT workspace, application_id, application_name 
+          FROM apex_applications 
+          WHERE application_id = 119;
           exit;
           EOF
 

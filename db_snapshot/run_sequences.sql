@@ -1,0 +1,12 @@
+SPOOL "C:/Users/Dell/Desktop/cicd/db/sequences/EMP_SEQ.sql"
+SELECT DBMS_METADATA.GET_DDL('SEQUENCE','EMP_SEQ','IRM_POC') FROM dual;
+SPOOL OFF;
+
+SPOOL "C:/Users/Dell/Desktop/cicd/db/sequences/DEPT_SEQ.sql"
+SELECT DBMS_METADATA.GET_DDL('SEQUENCE','DEPT_SEQ','IRM_POC') FROM dual;
+SPOOL OFF;
+
+SPOOL "C:/Users/Dell/Desktop/cicd/db/sequences/IGCB_TASKS_SEQ.sql"
+SELECT DBMS_METADATA.GET_DDL('SEQUENCE','IGCB_TASKS_SEQ','IRM_POC') FROM dual;
+SPOOL OFF;
+
