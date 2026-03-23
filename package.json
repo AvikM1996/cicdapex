@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/AvikM1996/cicdapex/issues"
   },
-  "homepage": "https://github.com/AvikM1996/cicdapex#readme"
+  "homepage": "https://github.com/AvikM1996/cicdapex#readme",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "liquibase": "^4.28.1"
+  }
 }
