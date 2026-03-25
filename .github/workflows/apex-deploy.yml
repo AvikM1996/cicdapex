@@ -30,7 +30,12 @@ jobs:
       - name: Install Liquibase
         run: |
           curl -L -o liquibase.tar.gz https://github.com/liquibase/liquibase/releases/download/v4.23.0/liquibase-4.23.0.tar.gz
-          tar -xvf liquibase.tar.gz
+          
+          # 🔥 clean previous (important)
+          rm -rf liquibase
+          # 🔥 extract properly
+          tar -xzf liquibase.tar.gz
+          # 🔥 move binary
           sudo mv liquibase /usr/local/bin/
 
       # 🚀 Run Liquibase (NO env block)
