@@ -80,6 +80,8 @@ jobs:
       - name: 🔍 Diagnostic Queries
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET DEFINE OFF;
+          SET SCAN OFF;
           SET HEADING ON;
           SET FEEDBACK OFF;
           PROMPT ===== SCHEMA & TABLE INFO =====;
@@ -87,16 +89,20 @@ jobs:
           SELECT owner, table_name FROM all_tables WHERE table_name = 'PRODUCT' OR table_name = 'product';
           
           PROMPT ===== APEX WORKSPACE MAPPING =====;
-          SELECT workspace_name, schema FROM apex_workspace_schemas WHERE schema = sys_context('USERENV', 'CURRENT_SCHEMA');
+          -- In apex_workspace_schemas, the column is workspace_name
+          SELECT workspace_name, schema FROM apex_workspace_schemas WHERE schema = 'IRM_POC';
           
           PROMPT ===== FINAL WORKSPACE CHECK =====;
-          SELECT workspace_name, application_id, application_name FROM apex_applications WHERE application_id = 119;
+          -- In apex_applications, the column is workspace
+          SELECT workspace, application_id, application_name FROM apex_applications WHERE application_id = 119;
           exit;
           EOF
 
       - name: 🔌 Test DB Connection
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET DEFINE OFF;
+          SET SCAN OFF;
           SET HEADING OFF;
           SELECT 'DB Connected: ' || SYSDATE FROM dual;
           exit;
@@ -105,8 +111,10 @@ jobs:
       - name: 📊 Check Existing Apps
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET DEFINE OFF;
+          SET SCAN OFF;
           SET HEADING OFF;
-          SELECT workspace_name || ' | ' || application_id || ' | ' || application_name 
+          SELECT workspace || ' | ' || application_id || ' | ' || application_name 
           FROM apex_applications 
           WHERE application_id = 119;
           exit;
@@ -114,6 +122,8 @@ jobs:
       - name: 🔍 Find Workspace from Schema  
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET DEFINE OFF;
+          SET SCAN OFF;
           SET HEADING ON;
           SELECT workspace_name, schema 
           FROM apex_workspace_schemas;
@@ -123,12 +133,13 @@ jobs:
       - name: 🚀 Import APEX Application
         run: |
           ./sqlcl/bin/sql ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
-          WHENEVER SQLERROR EXIT SQL.SQLCODE;
           SET DEFINE OFF;
+          SET SCAN OFF;
+          WHENEVER SQLERROR EXIT SQL.SQLCODE;
           BEGIN
-            -- 🛠️ Correct way to override workspace and schema during deployment
+            -- 🛠️ Force import into wksp_poc workspace and IRM_POC schema
             apex_application_install.set_workspace('${{ secrets.APEX_WORKSPACE }}');
-            apex_application_install.set_schema(sys_context('USERENV', 'CURRENT_SCHEMA'));
+            apex_application_install.set_schema('IRM_POC');
           END;
           /
           PROMPT ===== STARTING APEX IMPORT =====;
