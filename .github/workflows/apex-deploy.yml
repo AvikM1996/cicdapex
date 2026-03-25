@@ -54,6 +54,8 @@ jobs:
             --password="${{ secrets.DB_PASS }}" \
             --changeLogFile="./liquibase/master.xml" \
             --driver=oracle.jdbc.OracleDriver \
+            --liquibaseSchemaName=IRM_POC \
+            --defaultSchemaName=IRM_POC \
             update
 
       - name: 🔍 Debug Environment
@@ -147,7 +149,7 @@ jobs:
           PROMPT ===== IMPORT COMPLETED =====;
           exit;
           EOF
-      - name: 🔍 Check Workspace Mapping   # 👈 Ekhane bosbe
+      - name: 🔍 Check Workspace Mapping  
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
           SET HEADING ON;
