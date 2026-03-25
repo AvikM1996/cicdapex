@@ -53,6 +53,7 @@ jobs:
             --username="${{ secrets.DB_USER }}" \
             --password="${{ secrets.DB_PASS }}" \
             --changeLogFile="./liquibase/master.xml" \
+            --searchPath="./liquibase" \
             --driver=oracle.jdbc.OracleDriver \
             --liquibaseSchemaName=IRM_POC \
             --defaultSchemaName=IRM_POC \

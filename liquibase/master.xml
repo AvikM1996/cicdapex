@@ -6,10 +6,10 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <include file="changes/001_create_product_table.xml"/>
-    <include file="changes/002_remove_color_column.xml"/>
-    <include file="changes/003_add_price_column.xml"/>
-    <include file="changes/004_create_product_category_table.xml"/>
-    <include file="changes/005_add_product_category_fk.xml"/>
+    <include file="changes/001_create_product_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/002_remove_color_column.xml" relativeToChangelogFile="true"/>
+    <include file="changes/003_add_price_column.xml" relativeToChangelogFile="true"/>
+    <include file="changes/004_create_product_category_table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/005_add_product_category_fk.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
