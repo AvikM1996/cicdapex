@@ -26,11 +26,22 @@ jobs:
       - name: 📍 Set TNS_ADMIN
         run: echo "TNS_ADMIN=$(pwd)/wallet" >> $GITHUB_ENV
 
+      - name: ⚙️ Install SQLcl
+        run: |
+          curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
+          unzip -o sqlcl.zip
+
       - name: Install Liquibase
         run: |
           curl -L -o liquibase.tar.gz https://github.com/liquibase/liquibase/releases/download/v4.23.0/liquibase-4.23.0.tar.gz
           mkdir liquibase-cli
           tar -xzf liquibase.tar.gz -C liquibase-cli
+          
+          # 🔐 Copy Oracle security jars from SQLcl to Liquibase
+          cp sqlcl/lib/oraclepki.jar liquibase-cli/internal/lib/ || echo "⚠️ oraclepki.jar not found"
+          cp sqlcl/lib/osdt_core.jar liquibase-cli/internal/lib/ || echo "⚠️ osdt_core.jar not found"
+          cp sqlcl/lib/osdt_cert.jar liquibase-cli/internal/lib/ || echo "⚠️ osdt_cert.jar not found"
+
           chmod +x liquibase-cli/liquibase
           echo "$(pwd)/liquibase-cli" >> $GITHUB_PATH
 
@@ -44,11 +55,6 @@ jobs:
             --changeLogFile="./liquibase/master.xml" \
             --driver=oracle.jdbc.OracleDriver \
             update
-
-      - name: ⚙️ Install SQLcl
-        run: |
-          curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
-          unzip -o sqlcl.zip
 
       - name: 🔍 Debug Environment
         run: |
