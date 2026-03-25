@@ -1,0 +1,11 @@
+<changeSet id="004" author="avishek">
+
+    <addColumn tableName="product">
+        <column name="price" type="number(10,2)"/>
+    </addColumn>
+
+    <rollback>
+        <dropColumn tableName="product" columnName="price"/>
+    </rollback>
+
+</changeSet>

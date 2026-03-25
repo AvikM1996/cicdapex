@@ -1,0 +1,22 @@
+<changeSet id="006" author="avishek">
+
+    <addColumn tableName="product">
+        <column name="category_id" type="number"/>
+    </addColumn>
+
+    <addForeignKeyConstraint
+        baseTableName="product"
+        baseColumnNames="category_id"
+        referencedTableName="product_category"
+        referencedColumnNames="id"
+        constraintName="fk_product_category"/>
+
+    <rollback>
+        <dropForeignKeyConstraint 
+            baseTableName="product" 
+            constraintName="fk_product_category"/>
+
+        <dropColumn tableName="product" columnName="category_id"/>
+    </rollback>
+
+</changeSet>

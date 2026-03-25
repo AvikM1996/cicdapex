@@ -1,0 +1,11 @@
+<changeSet id="003" author="avishek">
+
+    <dropColumn tableName="product" columnName="color"/>
+
+    <rollback>
+        <addColumn tableName="product">
+            <column name="color" type="varchar2(50)"/>
+        </addColumn>
+    </rollback>
+
+</changeSet>
