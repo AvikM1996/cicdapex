@@ -26,6 +26,24 @@ jobs:
       - name: 📍 Set TNS_ADMIN
         run: echo "TNS_ADMIN=$(pwd)/wallet" >> $GITHUB_ENV
 
+      # 🔥 Install Liquibase
+      - name: Install Liquibase
+        run: |
+          curl -L -o liquibase.tar.gz https://github.com/liquibase/liquibase/releases/download/v4.23.0/liquibase-4.23.0.tar.gz
+          tar -xvf liquibase.tar.gz
+          sudo mv liquibase /usr/local/bin/
+
+      # 🚀 Run Liquibase (NO env block)
+      - name: Run Liquibase Migration
+        run: |
+          liquibase \
+            --url="${{ secrets.DB_URL }}" \
+            --username="${{ secrets.DB_USER }}" \
+            --password="${{ secrets.DB_PASS }}" \
+            --changeLogFile="./liquibase/master.xml" \
+            --driver=oracle.jdbc.OracleDriver \
+            update
+
       - name: ⚙️ Install SQLcl
         run: |
           curl -L -o sqlcl.zip https://download.oracle.com/otn_software/java/sqldeveloper/sqlcl-latest.zip
@@ -69,7 +87,7 @@ jobs:
           WHERE application_id = 119;
           exit;
           EOF
-      - name: 🔍 Find Workspace from Schema   # 👈 Ekhane bosbe
+      - name: 🔍 Find Workspace from Schema  
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
           SET HEADING ON;
