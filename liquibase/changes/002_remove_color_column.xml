@@ -1,11 +1,17 @@
-<changeSet id="003" author="avishek">
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <dropColumn tableName="product" columnName="color"/>
+    <changeSet id="003" author="avishek">
+        <dropColumn tableName="product" columnName="color"/>
+        <rollback>
+            <addColumn tableName="product">
+                <column name="color" type="varchar2(50)"/>
+            </addColumn>
+        </rollback>
+    </changeSet>
 
-    <rollback>
-        <addColumn tableName="product">
-            <column name="color" type="varchar2(50)"/>
-        </addColumn>
-    </rollback>
-
-</changeSet>
+</databaseChangeLog>
