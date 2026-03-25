@@ -77,6 +77,23 @@ jobs:
           EXIT;
           EOF
 
+      - name: 🔍 Diagnostic Queries
+        run: |
+          ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
+          SET HEADING ON;
+          SET FEEDBACK OFF;
+          PROMPT ===== SCHEMA & TABLE INFO =====;
+          SELECT sys_context('USERENV', 'CURRENT_SCHEMA') AS current_schema FROM dual;
+          SELECT owner, table_name FROM all_tables WHERE table_name = 'PRODUCT' OR table_name = 'product';
+          
+          PROMPT ===== APEX WORKSPACE MAPPING =====;
+          SELECT workspace, schema FROM apex_workspace_schemas WHERE schema = sys_context('USERENV', 'CURRENT_SCHEMA');
+          
+          PROMPT ===== FINAL WORKSPACE CHECK =====;
+          SELECT workspace, application_id, application_name FROM apex_applications WHERE application_id = 119;
+          exit;
+          EOF
+
       - name: 🔌 Test DB Connection
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
