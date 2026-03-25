@@ -7,7 +7,11 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
     <changeSet id="002" author="avishek">
-
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="product"/>
+            </not>
+        </preConditions>
         <createTable tableName="product">
 
             <column name="id" type="number">
