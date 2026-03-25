@@ -87,10 +87,10 @@ jobs:
           SELECT owner, table_name FROM all_tables WHERE table_name = 'PRODUCT' OR table_name = 'product';
           
           PROMPT ===== APEX WORKSPACE MAPPING =====;
-          SELECT workspace, schema FROM apex_workspace_schemas WHERE schema = sys_context('USERENV', 'CURRENT_SCHEMA');
+          SELECT workspace_name, schema FROM apex_workspace_schemas WHERE schema = sys_context('USERENV', 'CURRENT_SCHEMA');
           
           PROMPT ===== FINAL WORKSPACE CHECK =====;
-          SELECT workspace, application_id, application_name FROM apex_applications WHERE application_id = 119;
+          SELECT workspace_name, application_id, application_name FROM apex_applications WHERE application_id = 119;
           exit;
           EOF
 
@@ -106,7 +106,7 @@ jobs:
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
           SET HEADING OFF;
-          SELECT workspace || ' | ' || application_id || ' | ' || application_name 
+          SELECT workspace_name || ' | ' || application_id || ' | ' || application_name 
           FROM apex_applications 
           WHERE application_id = 119;
           exit;
@@ -115,7 +115,7 @@ jobs:
         run: |
           ./sqlcl/bin/sql -s ${{ secrets.DB_USER }}/${{ secrets.DB_PASS }}@${{ secrets.DB_CONN }} <<EOF
           SET HEADING ON;
-          SELECT workspace, schema 
+          SELECT workspace_name, schema 
           FROM apex_workspace_schemas;
           exit;
           EOF
@@ -126,7 +126,9 @@ jobs:
           WHENEVER SQLERROR EXIT SQL.SQLCODE;
           SET DEFINE OFF;
           BEGIN
-            APEX_UTIL.SET_WORKSPACE('${{ secrets.APEX_WORKSPACE }}');
+            -- 🛠️ Correct way to override workspace and schema during deployment
+            apex_application_install.set_workspace('${{ secrets.APEX_WORKSPACE }}');
+            apex_application_install.set_schema(sys_context('USERENV', 'CURRENT_SCHEMA'));
           END;
           /
           PROMPT ===== STARTING APEX IMPORT =====;
