@@ -30,13 +30,16 @@ jobs:
         run: |
           curl -L -o liquibase.tar.gz https://github.com/liquibase/liquibase/releases/download/v4.23.0/liquibase-4.23.0.tar.gz
     
-          tar -xzf liquibase.tar.gz
-          chmod +x liquibase/liquibase
-          echo "$(pwd)/liquibase" >> $GITHUB_PATH
+          # 🔥 extract to different folder
+          mkdir liquibase-cli
+          tar -xzf liquibase.tar.gz -C liquibase-cli --strip-components=1
+
+          chmod +x liquibase-cli/liquibase
 
       # 🚀 Run Liquibase (NO env block)
       - name: Run Liquibase Migration
         run: |
+          export TNS_ADMIN=$(pwd)/wallet
           liquibase \
             --url="${{ secrets.DB_URL }}" \
             --username="${{ secrets.DB_USER }}" \
